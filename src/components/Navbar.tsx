@@ -79,21 +79,21 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-3 sm:px-4 w-full pointer-events-none">
+      <div id="nav-container" className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-3 sm:px-4 w-full pointer-events-none opacity-0">
         <nav
           ref={navRef}
           className={`pointer-events-auto flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] w-full max-w-5xl ${isScrolled
-              ? "bg-background/80 backdrop-blur-xl border border-foreground/10 text-foreground translate-y-0 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)]"
-              : "bg-transparent border border-transparent text-foreground -translate-y-2"
+            ? "bg-background/80 backdrop-blur-xl border border-foreground/10 text-foreground translate-y-0 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.05)]"
+            : "bg-transparent border border-transparent text-foreground -translate-y-2"
             }`}
         >
-          <div className="text-lg sm:text-xl font-drama italic font-medium tracking-wide">
+          <div id="nav-logo" className="text-lg sm:text-xl font-drama italic font-medium tracking-wide">
             Atelier Maren
           </div>
 
           {/* Desktop nav links */}
           <ul className="hidden md:flex items-center gap-8 font-sans text-xs tracking-widest uppercase">
-            {["Projects", "Studio", "Services", "Contact"].map((item) => (
+            {["Projects", "Studio", "Services", "Journal"].map((item) => (
               <li key={item}>
                 <button className="relative group overflow-hidden pb-1">
                   <span className="relative z-10 transition-transform duration-500 ease-out group-hover:-translate-y-full block">
@@ -102,7 +102,6 @@ export default function Navbar() {
                   <span className="absolute top-0 left-0 z-10 translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 block">
                     {item}
                   </span>
-                  <span className="absolute bottom-0 left-0 w-full h-[1px] bg-current scale-x-0 origin-left transition-transform duration-500 ease-out group-hover:scale-x-100"></span>
                 </button>
               </li>
             ))}
@@ -113,8 +112,8 @@ export default function Navbar() {
             <ButtonWithIconDemo
               label="Book Consultation"
               className={`border-none ${isScrolled
-                  ? "bg-foreground text-background"
-                  : "bg-foreground text-background"
+                ? "bg-foreground text-background"
+                : "bg-foreground text-background"
                 }`}
             />
           </div>
@@ -126,14 +125,12 @@ export default function Navbar() {
             aria-label="Toggle mobile menu"
           >
             <span
-              className={`block w-5 h-[1.5px] bg-foreground transition-all duration-300 origin-center ${
-                isMobileMenuOpen ? "rotate-45 translate-y-[3.75px]" : ""
-              }`}
+              className={`block w-5 h-[1.5px] bg-foreground transition-all duration-300 origin-center ${isMobileMenuOpen ? "rotate-45 translate-y-[3.75px]" : ""
+                }`}
             />
             <span
-              className={`block w-5 h-[1.5px] bg-foreground transition-all duration-300 origin-center ${
-                isMobileMenuOpen ? "-rotate-45 -translate-y-[3.75px]" : ""
-              }`}
+              className={`block w-5 h-[1.5px] bg-foreground transition-all duration-300 origin-center ${isMobileMenuOpen ? "-rotate-45 -translate-y-[3.75px]" : ""
+                }`}
             />
           </button>
         </nav>
@@ -153,7 +150,7 @@ export default function Navbar() {
         style={{ transform: "translateY(-100%)", opacity: 0, zIndex: 45 }}
       >
         <ul className="flex flex-col gap-6 mb-10">
-          {["Projects", "Studio", "Services", "Contact"].map((item) => (
+          {["Projects", "Studio", "Services", "Journal"].map((item) => (
             <li key={item} className="mobile-nav-item">
               <button
                 onClick={() => setIsMobileMenuOpen(false)}

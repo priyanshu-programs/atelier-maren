@@ -167,10 +167,14 @@ export default function ExplodingVideo() {
       className="relative w-full h-[400vh] bg-background mt-16 sm:mt-24 md:mt-32 lg:mt-48"
     >
       <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center">
+        {/* Top Edge Blend Gradient - Reduced height to avoid affecting image assets */}
+        <div
+          className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#F9F8F6] via-[#F9F8F6]/80 to-transparent z-[5] pointer-events-none"
+        />
 
         {/* Canvas with Seamless Background Blend */}
         <div
-          className="absolute inset-0 w-full h-full z-0 flex justify-center items-center pointer-events-none transform scale-[0.85]"
+          className="absolute inset-0 w-full h-full z-0 flex justify-center items-center pointer-events-none transform scale-[1.445] md:scale-[0.85]"
           style={{
             WebkitMaskImage: "radial-gradient(ellipse 58% 85% at 50% 50%, black 25%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 68%, transparent 80%)",
             maskImage: "radial-gradient(ellipse 58% 85% at 50% 50%, black 25%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 68%, transparent 80%)"

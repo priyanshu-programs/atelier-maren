@@ -25,7 +25,7 @@ export default function Philosophy() {
 
     // SplitText style reveal (using basic lines simulation since SplitText is a premium plugin)
     const lines = gsap.utils.toArray<HTMLElement>(".reveal-line");
-    
+
     gsap.from(lines, {
       y: 40,
       opacity: 0,
@@ -52,7 +52,7 @@ export default function Philosophy() {
           backgroundImage: "url('https://images.unsplash.com/photo-1595846519845-68e298c2cebc?q=80&w=2000&auto=format&fit=crop')",
         }}
       />
-      
+
       {/* Heavy gradient to blend edges */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#1A1A1A] via-transparent to-[#1A1A1A]" />
 
@@ -62,7 +62,7 @@ export default function Philosophy() {
             Most studios focus on: assembling furniture.
           </p>
         </div>
-        
+
         <div className="flex flex-col items-center leading-[1.1] text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl">
           <div className="overflow-hidden pb-4">
             <h2 className="reveal-line font-display font-medium tracking-tight">

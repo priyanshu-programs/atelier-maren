@@ -1,9 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import ButtonWithIconDemo from "@/components/ui/button-with-icon";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);
@@ -15,54 +18,63 @@ export default function Hero() {
   const pRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(() => {
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+  const [isMobile, setIsMobile] = useState(false);
 
-    // 1. Breathing Video Entrance
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useGSAP(() => {
+    // Delay Hero timeline by 2.6s to sync start with the Preloader's box reveal
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" }, delay: 2.6 });
+
+    // 1. Breathing Video Entrance zooms out slowly along with the box reveal
     tl.fromTo(
       videoWrapperRef.current,
       { scale: 1.15, filter: "brightness(0.6)" },
-      { scale: 1.05, filter: "brightness(1)", duration: 4, ease: "power2.out" },
+      { scale: 1.05, filter: "brightness(1)", duration: 2.2, ease: "power4.inOut" },
       0
     );
 
-    // 2. Text Stagger Reveal
+    // 2. Text Stagger Reveal triggers exactly after the whole preloader is done (at 2.2s)
     tl.fromTo(
       [textTitleRef.current, textDramaRef.current, pRef.current, ctaRef.current],
       { y: 40, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.2, stagger: 0.15, delay: 0.2 },
-      0.5 // Start text stagger a bit after video starts breathing
+      { y: 0, opacity: 1, duration: 1.2, stagger: 0.15 },
+      2.2
     );
 
-    // 3. Mouse Parallax (Magnetic effect)
-    const xToVideo = gsap.quickTo(videoWrapperRef.current, "x", { duration: 0.8, ease: "power3" });
-    const yToVideo = gsap.quickTo(videoWrapperRef.current, "y", { duration: 0.8, ease: "power3" });
+    // 3. Scroll Parallax
+    gsap.to(videoWrapperRef.current, {
+      y: "15%",
+      ease: "none",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
 
-    const xToText = gsap.quickTo(textContentRef.current, "x", { duration: 0.5, ease: "power2" });
-    const yToText = gsap.quickTo(textContentRef.current, "y", { duration: 0.5, ease: "power2" });
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      // Normalize mouse to -1 to 1
-      const x = (e.clientX / innerWidth - 0.5) * 2;
-      const y = (e.clientY / innerHeight - 0.5) * 2;
-
-      // Video moves slowly in opposite direction of mouse
-      xToVideo(-x * 20);
-      yToVideo(-y * 20);
-
-      // Text moves slightly WITH mouse
-      xToText(x * 12);
-      yToText(y * 12);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
+    gsap.to(textContentRef.current, {
+      y: "-20%",
+      opacity: 0,
+      ease: "none",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
   }, { scope: containerRef });
+
+  const maskStyle = isMobile
+    ? "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)"
+    : "radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%)";
 
   return (
     <section
@@ -72,10 +84,10 @@ export default function Hero() {
       {/* Background Video & Canvas overlay */}
       <div
         ref={videoWrapperRef}
-        className="absolute w-full h-full z-0 pointer-events-none origin-center"
+        className="absolute w-full h-[120%] -top-[10%] z-0 pointer-events-none origin-center"
         style={{
-          WebkitMaskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%)",
-          maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%)"
+          WebkitMaskImage: maskStyle,
+          maskImage: maskStyle
         }}
       >
         <video
@@ -83,12 +95,17 @@ export default function Hero() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover hidden sm:block"
         >
           <source src="/atelier-hero.mp4" type="video/mp4" />
         </video>
-        {/* Subtle overlay for text legibility */}
-        <div className="absolute inset-0 bg-white/30 z-20" />
+        <img
+          src="/mobile_hero.png"
+          alt="Atelier Maren Hero"
+          className="absolute inset-0 w-full h-full object-cover block sm:hidden"
+        />
+        {/* Subtle overlay for text legibility - hidden on mobile for better image clarity */}
+        <div className="absolute inset-0 bg-white/30 z-20 hidden sm:block" />
       </div>
 
       {/* Floating Foreground Content aligned for parallax */}

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Outfit, Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import FollowCursor from "@/components/ui/FollowCursor";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -26,8 +28,8 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Atelier Maren | High-End Interior Design",
-  description: "Spaces shaped by light and intention.",
+  title: "Atelier Maren — Luxury Residential Interior Design Studio",
+  description: "Atelier Maren creates refined residential interiors that balance materiality with daily life. Every project begins with listening. Book a consultation.",
 };
 
 export default function RootLayout({
@@ -40,16 +42,19 @@ export default function RootLayout({
       <body
         className={`${jakarta.variable} ${outfit.variable} ${cormorant.variable} ${plexMono.variable} font-sans antialiased`}
       >
-        {/* Global CSS Noise Overlay */}
-        <div className="noise-overlay">
-          <svg style={{ display: 'none' }}>
-            <filter id="noiseFilter">
-              <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-            </filter>
-          </svg>
-          <div style={{ width: '100%', height: '100%', filter: 'url(#noiseFilter)' }}></div>
-        </div>
-        {children}
+        <SmoothScroll>
+          {/* Global CSS Noise Overlay */}
+          <div className="noise-overlay">
+            <svg style={{ display: 'none' }}>
+              <filter id="noiseFilter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+              </filter>
+            </svg>
+            <div style={{ width: '100%', height: '100%', filter: 'url(#noiseFilter)' }}></div>
+          </div>
+          <FollowCursor color="#FAF8F5" zIndex={9999} />
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );

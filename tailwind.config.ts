@@ -24,6 +24,15 @@ const config: Config = {
         '2rem': '2rem',
         '3rem': '3rem',
         '4rem': '4rem',
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        }
+      },
+      animation: {
+        marquee: 'marquee 60s linear infinite',
       }
     },
   },

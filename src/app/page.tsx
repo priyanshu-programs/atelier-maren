@@ -1,3 +1,6 @@
+"use client";
+
+import Preloader from "@/components/Preloader";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ExplodingVideo from "@/components/ExplodingVideo";
@@ -10,6 +13,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-background w-full">
+      <Preloader />
       <Navbar />
       <Hero />
       <ExplodingVideo />

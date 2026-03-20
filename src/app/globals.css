@@ -39,3 +39,8 @@ body {
 .hide-initial {
   visibility: hidden;
 }
+
+/* Hide default cursor globally */
+* {
+  cursor: none !important;
+}

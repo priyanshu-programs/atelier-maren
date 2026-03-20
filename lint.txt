@@ -1,0 +1,19 @@
+
+> atelier-maren@0.1.0 lint
+> eslint
+
+
+C:\Users\rijup\OneDrive\Documents\1abc- Proj\Real Estate\atelier-maren\src\components\Features.tsx
+    6:10  warning  'ScrollTrigger' is defined but never used                        @typescript-eslint/no-unused-vars
+    7:10  warning  'MousePointer2' is defined but never used                        @typescript-eslint/no-unused-vars
+   32:15  warning  'isFront' is assigned a value but never used                     @typescript-eslint/no-unused-vars
+  212:71  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\rijup\OneDrive\Documents\1abc- Proj\Real Estate\atelier-maren\src\components\Philosophy.tsx
+  6:10  warning  'ScrollTrigger' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\rijup\OneDrive\Documents\1abc- Proj\Real Estate\atelier-maren\src\components\Protocol.tsx
+  6:10  warning  'ScrollTrigger' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 6 problems (1 error, 5 warnings)
+
