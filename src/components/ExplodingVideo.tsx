@@ -6,62 +6,116 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const TOTAL_FRAMES = 240;
+const MOBILE_FRAME_STEP = 3; // Load every 3rd frame on mobile → ~80 frames
+const MOBILE_BREAKPOINT = 768;
+const MOBILE_BATCH_SIZE = 20; // Progressive loading batch size
 
 function frameUrl(i: number) {
   return `/frames/frame_${String(i + 1).padStart(4, "0")}.jpg`;
+}
+
+/** Build the list of frame indices to load based on device */
+function getFrameIndices(isMobile: boolean): number[] {
+  const indices: number[] = [];
+  for (let i = 0; i < TOTAL_FRAMES; i += isMobile ? MOBILE_FRAME_STEP : 1) {
+    indices.push(i);
+  }
+  return indices;
+}
+
+/** Load a single frame image */
+function loadFrame(frameIndex: number): Promise<HTMLImageElement> {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image();
+    img.src = frameUrl(frameIndex);
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+  });
 }
 
 export default function ExplodingVideo() {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const framesRef = useRef<HTMLImageElement[]>([]);
+  const lastDrawnFrameRef = useRef<number>(-1); // Throttle: track last drawn index
+  const isMobileRef = useRef(false);
   const [ready, setReady] = useState(false);
 
   const text1Ref = useRef<HTMLDivElement>(null);
   const text2Ref = useRef<HTMLDivElement>(null);
   const text3Ref = useRef<HTMLDivElement>(null);
 
-  // Removed heavy SVG refs for performance
-
-  // Preload all 240 static JPG frame images in parallel
+  // Preload frames — progressive on mobile, parallel on desktop
   useEffect(() => {
     let cancelled = false;
+    const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+    isMobileRef.current = isMobile;
 
-    const preload = async () => {
-      const promises = Array.from({ length: TOTAL_FRAMES }, (_, i) => {
-        return new Promise<HTMLImageElement>((resolve, reject) => {
-          const img = new Image();
-          img.src = frameUrl(i);
-          img.onload = () => resolve(img);
-          img.onerror = reject;
-        });
-      });
+    const frameIndices = getFrameIndices(isMobile);
 
-      const loaded = await Promise.all(promises);
-      if (cancelled) return;
-
-      framesRef.current = loaded;
-
-      // Draw first frame to canvas immediately with high DPI support
+    /** Initialize the canvas with the correct dimensions */
+    const initCanvas = (firstImg: HTMLImageElement) => {
       const canvas = canvasRef.current;
-      if (canvas) {
-        const dpr = window.devicePixelRatio || 1;
-        const width = loaded[0].naturalWidth;
-        const height = loaded[0].naturalHeight;
+      if (!canvas) return;
 
+      const width = firstImg.naturalWidth;
+      const height = firstImg.naturalHeight;
+
+      if (isMobile) {
+        // Skip DPR scaling on mobile — CSS handles visual sizing
+        canvas.width = width;
+        canvas.height = height;
+      } else {
+        const dpr = window.devicePixelRatio || 1;
         canvas.width = width * dpr;
         canvas.height = height * dpr;
-
         const ctx = canvas.getContext("2d");
         if (ctx) {
           ctx.scale(dpr, dpr);
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = "high";
-          ctx.drawImage(loaded[0], 0, 0, width, height);
         }
       }
 
-      setReady(true);
+      // Draw first frame immediately
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(firstImg, 0, 0, width, height);
+      }
+    };
+
+    const preload = async () => {
+      if (isMobile) {
+        // Progressive loading: load first batch, then remaining batches in background
+        const firstBatchIndices = frameIndices.slice(0, MOBILE_BATCH_SIZE);
+        const firstBatch = await Promise.all(firstBatchIndices.map(loadFrame));
+        if (cancelled) return;
+
+        // Initialize array with slots for all frames
+        const allFrames = new Array<HTMLImageElement>(frameIndices.length);
+        firstBatch.forEach((img, i) => { allFrames[i] = img; });
+        framesRef.current = allFrames;
+
+        initCanvas(firstBatch[0]);
+        setReady(true); // Sequence is usable now
+
+        // Load remaining batches in the background
+        for (let start = MOBILE_BATCH_SIZE; start < frameIndices.length; start += MOBILE_BATCH_SIZE) {
+          if (cancelled) return;
+          const batchIndices = frameIndices.slice(start, start + MOBILE_BATCH_SIZE);
+          const batch = await Promise.all(batchIndices.map(loadFrame));
+          if (cancelled) return;
+          batch.forEach((img, i) => { allFrames[start + i] = img; });
+        }
+      } else {
+        // Desktop: load all frames in parallel (original behavior)
+        const loaded = await Promise.all(frameIndices.map(loadFrame));
+        if (cancelled) return;
+
+        framesRef.current = loaded;
+        initCanvas(loaded[0]);
+        setReady(true);
+      }
     };
 
     preload();
@@ -82,13 +136,14 @@ export default function ExplodingVideo() {
     if (!ctx) return;
 
     const frames = framesRef.current;
+    const isMobile = isMobileRef.current;
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.3,
+        scrub: isMobile ? 0.5 : 0.3, // Slightly larger scrub on mobile for smoother feel
       },
     });
 
@@ -101,65 +156,94 @@ export default function ExplodingVideo() {
       snap: { frame: 1 },
       onUpdate: () => {
         const idx = Math.round(proxy.frame);
-        if (frames[idx]) {
-          const img = frames[idx];
-          // Clear canvas before drawing
-          ctx.clearRect(0, 0, img.naturalWidth, img.naturalHeight);
-          ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight);
+        // Throttle: skip redraw if same frame as last time
+        if (idx === lastDrawnFrameRef.current) return;
+        lastDrawnFrameRef.current = idx;
+
+        const img = frames[idx];
+        // Guard: frame may not be loaded yet during progressive loading
+        if (img) {
+          const w = img.naturalWidth;
+          const h = img.naturalHeight;
+          ctx.clearRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
         }
       },
     }, 0);
 
-    // Helper for Liquid/Ink Reveal Animation
-    const applyLiquidReveal = (ref: React.RefObject<HTMLDivElement | null>, num: number, startEnter: number, startExit: number) => {
-      if (ref.current) {
-        gsap.set(ref.current, { filter: `url(#liquid-reveal-${num})` });
-      }
+    if (isMobile) {
+      // Mobile: simple fade + scale text reveals (no SVG filters)
+      const applySimpleReveal = (ref: React.RefObject<HTMLDivElement | null>, startEnter: number, startExit: number) => {
+        // Entrance
+        tl.fromTo(ref.current,
+          { opacity: 0, scale: 0.92, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power3.out" },
+          startEnter
+        );
+        // Exit
+        tl.to(ref.current,
+          { opacity: 0, scale: 1.05, y: -20, duration: 0.15, ease: "power2.in" },
+          startExit
+        );
+      };
 
-      // Entrance Text
-      tl.fromTo(ref.current,
-        { opacity: 0, scale: 0.92, y: 20 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power3.out" },
-        startEnter
-      );
+      applySimpleReveal(text1Ref, 0.1, 0.25);
+      applySimpleReveal(text2Ref, 0.4, 0.55);
+      applySimpleReveal(text3Ref, 0.7, 0.85);
+    } else {
+      // Desktop: full liquid/ink reveal with SVG filters
+      const applyLiquidReveal = (ref: React.RefObject<HTMLDivElement | null>, num: number, startEnter: number, startExit: number) => {
+        if (ref.current) {
+          gsap.set(ref.current, { filter: `url(#liquid-reveal-${num})` });
+        }
 
-      // Entrance Distortion (starts blurry & warped, snaps to focus)
-      tl.fromTo(`#displacement-${num}`,
-        { attr: { scale: 30 } },
-        { attr: { scale: 0 }, duration: 0.25, ease: "power3.out" },
-        startEnter
-      );
+        // Entrance Text
+        tl.fromTo(ref.current,
+          { opacity: 0, scale: 0.92, y: 20 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.2, ease: "power3.out" },
+          startEnter
+        );
 
-      tl.fromTo(`#blur-${num}`,
-        { attr: { stdDeviation: 8 } },
-        { attr: { stdDeviation: 0 }, duration: 0.25, ease: "power3.out" },
-        startEnter
-      );
+        // Entrance Distortion
+        tl.fromTo(`#displacement-${num}`,
+          { attr: { scale: 30 } },
+          { attr: { scale: 0 }, duration: 0.25, ease: "power3.out" },
+          startEnter
+        );
 
-      // Exit Text
-      tl.to(ref.current,
-        { opacity: 0, scale: 1.05, y: -20, duration: 0.15, ease: "power2.in" },
-        startExit
-      );
+        tl.fromTo(`#blur-${num}`,
+          { attr: { stdDeviation: 8 } },
+          { attr: { stdDeviation: 0 }, duration: 0.25, ease: "power3.out" },
+          startEnter
+        );
 
-      // Exit Distortion (warps & blurs as it leaves)
-      tl.fromTo(`#displacement-${num}`,
-        { attr: { scale: 0 } },
-        { attr: { scale: 20 }, duration: 0.15, ease: "power2.in" },
-        startExit
-      );
+        // Exit Text
+        tl.to(ref.current,
+          { opacity: 0, scale: 1.05, y: -20, duration: 0.15, ease: "power2.in" },
+          startExit
+        );
 
-      tl.fromTo(`#blur-${num}`,
-        { attr: { stdDeviation: 0 } },
-        { attr: { stdDeviation: 4 }, duration: 0.15, ease: "power2.in" },
-        startExit
-      );
-    };
+        // Exit Distortion
+        tl.fromTo(`#displacement-${num}`,
+          { attr: { scale: 0 } },
+          { attr: { scale: 20 }, duration: 0.15, ease: "power2.in" },
+          startExit
+        );
 
-    applyLiquidReveal(text1Ref, 1, 0.1, 0.25);
-    applyLiquidReveal(text2Ref, 2, 0.4, 0.55);
-    applyLiquidReveal(text3Ref, 3, 0.7, 0.85);
+        tl.fromTo(`#blur-${num}`,
+          { attr: { stdDeviation: 0 } },
+          { attr: { stdDeviation: 4 }, duration: 0.15, ease: "power2.in" },
+          startExit
+        );
+      };
+
+      applyLiquidReveal(text1Ref, 1, 0.1, 0.25);
+      applyLiquidReveal(text2Ref, 2, 0.4, 0.55);
+      applyLiquidReveal(text3Ref, 3, 0.7, 0.85);
+    }
   }, { scope: containerRef, dependencies: [ready] });
+
+  const isMobile = isMobileRef.current;
 
   return (
     <section
@@ -183,7 +267,7 @@ export default function ExplodingVideo() {
           />
         </div>
 
-        {/* SVG Filters for Liquid Reveal */}
+        {/* SVG Filters for Liquid Reveal — only rendered on desktop */}
         <svg className="hidden">
           <defs>
             {[1, 2, 3].map((num) => (
