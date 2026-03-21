@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useCallback, useState, useEffect } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -20,18 +21,24 @@ const steps = [
     desc: "Understanding how you live, breathe, and move within your home. We don't begin with a mood board. We begin with a conversation.",
     image:
       "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1400&q=80",
+    mobileImage:
+      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=70",
   },
   {
     title: "Intentionality",
     desc: "Curating every material and photon of light to serve a specific purpose. Nothing decorative. Everything deliberate.",
     image:
       "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1400&q=80",
+    mobileImage:
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=70",
   },
   {
     title: "Realization",
     desc: "Bringing the vision to life with uncompromising precision and care. Every seam, every joint, every shadow — verified.",
     image:
       "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1400&q=80",
+    mobileImage:
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800&q=70",
   },
 ];
 
@@ -296,7 +303,7 @@ export default function Protocol() {
 
       /* ═══════════════════ MOBILE (<768px) ═══════════════════ */
       mm.add("(max-width: 767px)", () => {
-        // Simple fade-up reveal for each step on mobile
+        // GPU-friendly reveal: only opacity + translateY (no filter/blur/scale to avoid repaints)
         const mobileSteps = gsap.utils.toArray<HTMLElement>(".mobile-step");
 
         mobileSteps.forEach((step) => {
@@ -306,16 +313,15 @@ export default function Protocol() {
           if (img) {
             gsap.fromTo(
               img,
-              { opacity: 0, scale: 1.05, filter: "blur(4px)" },
+              { opacity: 0, y: 30 },
               {
                 opacity: 1,
-                scale: 1,
-                filter: "blur(0px)",
-                duration: 1,
+                y: 0,
+                duration: 0.8,
                 ease: "power3.out",
                 scrollTrigger: {
                   trigger: step,
-                  start: "top 80%",
+                  start: "top 85%",
                 },
               }
             );
@@ -324,16 +330,16 @@ export default function Protocol() {
           if (content) {
             gsap.fromTo(
               content,
-              { opacity: 0, y: 30 },
+              { opacity: 0, y: 20 },
               {
                 opacity: 1,
                 y: 0,
-                duration: 1,
-                delay: 0.15,
+                duration: 0.8,
+                delay: 0.1,
                 ease: "power3.out",
                 scrollTrigger: {
                   trigger: step,
-                  start: "top 75%",
+                  start: "top 80%",
                 },
               }
             );
@@ -345,16 +351,16 @@ export default function Protocol() {
         if (sectionHeader) {
           gsap.fromTo(
             sectionHeader.children,
-            { opacity: 0, y: 40 },
+            { opacity: 0, y: 30 },
             {
               opacity: 1,
               y: 0,
-              stagger: 0.12,
-              duration: 1,
+              stagger: 0.1,
+              duration: 0.8,
               ease: "power3.out",
               scrollTrigger: {
                 trigger: sectionHeader,
-                start: "top 85%",
+                start: "top 88%",
               },
             }
           );
@@ -503,7 +509,7 @@ export default function Protocol() {
       </div>
 
       {/* ═══════════════════ MOBILE LAYOUT ═══════════════════ */}
-      <div className="md:hidden w-full">
+      <div className="md:hidden w-full overflow-hidden">
         {/* Mobile header */}
         <div className="protocol-header-mobile px-6 pt-16 pb-8">
           <h2 className="font-display text-4xl sm:text-5xl mb-4 text-foreground">
@@ -515,16 +521,24 @@ export default function Protocol() {
           </p>
         </div>
 
-        {/* Mobile steps — image above text, stacked vertically */}
+        {/* Mobile steps — Next.js Image for lazy loading + responsive sizing */}
         {steps.map((step, i) => (
           <div key={`mobile-${i}`} className="mobile-step mb-12 last:mb-0">
-            {/* Step image */}
+            {/* Step image — uses Next.js Image for lazy loading & perf */}
             <div
-              className="mobile-step-img w-full h-[45vh] bg-cover bg-center relative overflow-hidden"
-              style={{ backgroundImage: `url(${step.image})` }}
+              className="mobile-step-img w-full h-[45vh] relative overflow-hidden will-change-transform"
             >
+              <Image
+                src={step.mobileImage}
+                alt={step.title}
+                fill
+                sizes="100vw"
+                loading="lazy"
+                className="object-cover"
+                quality={70}
+              />
               {/* Gradient overlay for text legibility below */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-[1]" />
             </div>
 
             {/* Step text content */}

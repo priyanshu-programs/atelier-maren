@@ -59,7 +59,7 @@ export default function Footer() {
 
       {/* Bottom section: Giant Text Ticker */}
       <div
-        className="w-full mt-auto overflow-hidden pointer-events-none pb-4 sm:pb-0"
+        className="w-full max-w-[100vw] mt-auto overflow-hidden pointer-events-none pb-4 sm:pb-0"
         style={{
           WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
           maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'

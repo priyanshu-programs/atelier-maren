@@ -167,12 +167,7 @@ export default function Navbar() {
             className="bg-foreground text-background font-sans uppercase tracking-widest w-full justify-center"
           />
         </div>
-        <div className="mobile-nav-item mt-8 flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/40">
-            Accepting new projects
-          </span>
-        </div>
+
       </div>
     </>
   );

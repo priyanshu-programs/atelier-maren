@@ -33,6 +33,22 @@ function loadFrame(frameIndex: number): Promise<HTMLImageElement> {
   });
 }
 
+/** Erase image pixels at the top of the canvas so they fade to transparent */
+function applyTopFade(ctx: CanvasRenderingContext2D, w: number, h: number) {
+  ctx.save();
+  ctx.globalCompositeOperation = "destination-out";
+  const fadeHeight = h * 0.35;
+  const grad = ctx.createLinearGradient(0, 0, 0, fadeHeight);
+  grad.addColorStop(0, "rgba(0,0,0,1)");
+  grad.addColorStop(0.3, "rgba(0,0,0,0.8)");
+  grad.addColorStop(0.55, "rgba(0,0,0,0.4)");
+  grad.addColorStop(0.8, "rgba(0,0,0,0.1)");
+  grad.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, fadeHeight);
+  ctx.restore();
+}
+
 export default function ExplodingVideo() {
   const containerRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -77,10 +93,11 @@ export default function ExplodingVideo() {
         }
       }
 
-      // Draw first frame immediately
+      // Draw first frame immediately with top fade
       const ctx = canvas.getContext("2d");
       if (ctx) {
         ctx.drawImage(firstImg, 0, 0, width, height);
+        applyTopFade(ctx, width, height);
       }
     };
 
@@ -166,7 +183,9 @@ export default function ExplodingVideo() {
           const w = img.naturalWidth;
           const h = img.naturalHeight;
           ctx.clearRect(0, 0, w, h);
+          ctx.globalCompositeOperation = "source-over";
           ctx.drawImage(img, 0, 0, w, h);
+          applyTopFade(ctx, w, h);
         }
       },
     }, 0);

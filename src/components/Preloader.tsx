@@ -131,17 +131,7 @@ export default function Preloader() {
         />
       );
     }
-    
-    // Custom circular glyph detail inside a letter - specifically the 'R' in MAREN (index 10)
-    if (index === 10) {
-      return (
-         <span key={index} className="preloader-letter inline-block relative opacity-0">
-            {char}
-            {/* The signature circular glyph inside the R */}
-            <span className="absolute top-[0.25em] left-[0.28em] w-1 h-1 bg-accent rounded-full" />
-         </span>
-      );
-    }
+
 
     return (
       <span key={index} className="preloader-letter inline-block relative opacity-0">

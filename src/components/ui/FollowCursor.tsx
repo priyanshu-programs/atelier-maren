@@ -93,6 +93,7 @@ const FollowCursor: React.FC<FollowCursorProps> = ({
 
       canvas = document.createElement('canvas');
       context = canvas.getContext('2d');
+      canvas.className = 'hidden md:block';
       canvas.style.position = 'fixed';
       canvas.style.top = '0';
       canvas.style.left = '0';

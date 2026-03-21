@@ -173,14 +173,14 @@ const BlueprintCard = () => {
         </svg>
 
         {/* Clean Animated measure lines */}
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] hidden sm:flex justify-center items-center">
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] flex justify-center items-center">
           <div className="draft-line-h w-full flex items-center justify-between overflow-hidden">
             <div className="w-[2px] h-2.5 bg-foreground shrink-0" />
             <div className="flex-1 h-[2px] bg-foreground mx-[1px]" />
             <div className="w-[2px] h-2.5 bg-foreground shrink-0" />
           </div>
         </div>
-        <div className="absolute top-1/2 -translate-y-1/2 -right-6 h-[calc(100%-4rem)] hidden sm:flex flex-col justify-center items-center">
+        <div className="absolute top-1/2 -translate-y-1/2 -right-6 h-[calc(100%-4rem)] flex flex-col justify-center items-center">
           <div className="draft-line-v h-full flex flex-col items-center justify-between overflow-hidden">
             <div className="h-[2px] w-2.5 bg-foreground shrink-0" />
             <div className="flex-1 w-[2px] bg-foreground my-[1px]" />
@@ -189,8 +189,8 @@ const BlueprintCard = () => {
         </div>
 
         {/* Measurements */}
-        <span className="draft-measure absolute -top-10 left-1/2 -translate-x-1/2 text-[10px] sm:text-xs font-mono font-medium text-foreground/80 tracking-wider hidden sm:block">4200mm</span>
-        <span className="draft-measure absolute top-1/2 -right-16 -translate-y-1/2 text-[10px] sm:text-xs font-mono font-medium text-foreground/80 tracking-wider rotate-90 origin-center hidden sm:block">3600mm</span>
+        <span className="draft-measure absolute -top-10 left-1/2 -translate-x-1/2 text-[10px] sm:text-xs font-mono font-medium text-foreground/80 tracking-wider">4200mm</span>
+        <span className="draft-measure absolute top-1/2 -right-16 -translate-y-1/2 text-[10px] sm:text-xs font-mono font-medium text-foreground/80 tracking-wider rotate-90 origin-center">3600mm</span>
       </div>
     </div>
   );
@@ -326,7 +326,7 @@ export default function Features() {
         </div>
 
         {/* Card 2 */}
-        <div className="feature-card bg-white border border-foreground/5 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)] min-h-[350px] md:min-h-[400px]">
+        <div className="feature-card bg-white border border-foreground/5 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)] min-h-[350px] md:min-h-[400px] overflow-hidden">
           <div>
             <h3 className="font-display font-medium text-xl mb-2 text-[#1A1A1A]">Refined Precision</h3>
             <p className="font-sans text-sm text-[#1A1A1A]/70 mb-8">

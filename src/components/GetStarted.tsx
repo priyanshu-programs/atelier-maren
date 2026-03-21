@@ -21,12 +21,11 @@ export default function GetStarted() {
       // Smooth subtle appear animation
       gsap.fromTo(
         cardRef.current,
-        { scale: 0.95, opacity: 0, y: 30 },
+        { opacity: 0, y: 40 },
         {
-          scale: 1,
           opacity: 1,
           y: 0,
-          duration: 1.6,
+          duration: 1.2,
           ease: "power3.out",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -54,17 +53,16 @@ export default function GetStarted() {
       // Heading words reveal one by one
       gsap.fromTo(
         headingWordsRef.current,
-        { y: 80, opacity: 0, rotateX: 40 },
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          rotateX: 0,
           duration: 1,
-          stagger: 0.08,
+          stagger: 0.05,
           ease: "power3.out",
           scrollTrigger: {
             trigger: cardRef.current,
-            start: "top 50%",
+            start: "top 60%",
           },
         }
       );
@@ -141,10 +139,8 @@ export default function GetStarted() {
 
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center text-center px-6 sm:px-12 md:px-20 py-20 sm:py-28 md:py-36">
-          {/* Main heading — word-by-word reveal */}
           <h2
-            className="font-display font-medium text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl tracking-tight leading-[1.05] mb-8 sm:mb-10"
-            style={{ perspective: "800px" }}
+            className="font-display font-medium text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl tracking-tight leading-[1.1] mb-8 sm:mb-10"
           >
             {words.map((word, i) => (
               <span
@@ -155,9 +151,9 @@ export default function GetStarted() {
                 className="inline-block mr-[0.25em]"
                 style={{ opacity: 0 }}
               >
-                {/* Make certain words use drama font for contrast */}
+                {/* Make certain words use accent color for contrast */}
                 {word === "narrative" || word === "space." ? (
-                  <span className="font-drama italic text-accent font-light">
+                  <span className="text-accent font-normal">
                     {word}
                   </span>
                 ) : (
