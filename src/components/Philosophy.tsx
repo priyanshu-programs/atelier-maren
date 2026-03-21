@@ -49,7 +49,7 @@ export default function Philosophy() {
         ref={bgRef}
         className="absolute inset-0 w-full h-[120%] -top-[10%] opacity-20 bg-cover bg-center pointer-events-none"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1595846519845-68e298c2cebc?q=80&w=2000&auto=format&fit=crop')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?q=80&w=2000&auto=format&fit=crop')",
         }}
       />
 

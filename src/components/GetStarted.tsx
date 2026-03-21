@@ -122,7 +122,7 @@ export default function GetStarted() {
         {/* Ambient glow effect */}
         <div
           ref={glowRef}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[450px] sm:h-[450px] md:w-[600px] md:h-[600px] rounded-full pointer-events-none"
           style={{
             background:
               "radial-gradient(circle, rgba(212,203,179,0.15) 0%, rgba(212,203,179,0.05) 40%, transparent 70%)",
@@ -143,7 +143,7 @@ export default function GetStarted() {
         <div className="relative z-10 flex flex-col items-center text-center px-6 sm:px-12 md:px-20 py-20 sm:py-28 md:py-36">
           {/* Main heading — word-by-word reveal */}
           <h2
-            className="font-display font-medium text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl tracking-tight leading-[1.05] mb-8 sm:mb-10"
+            className="font-display font-medium text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl tracking-tight leading-[1.05] mb-8 sm:mb-10"
             style={{ perspective: "800px" }}
           >
             {words.map((word, i) => (
@@ -187,15 +187,7 @@ export default function GetStarted() {
           </div>
         </div>
 
-        {/* Bottom decorative mono text */}
-        <div className="absolute bottom-4 left-0 right-0 flex justify-between px-6 sm:px-12 pointer-events-none">
-          <span className="font-mono text-[9px] text-white/10 tracking-widest">
-            ATL—MRN / 2026
-          </span>
-          <span className="font-mono text-[9px] text-white/10 tracking-widest">
-            EST. MMXXIV
-          </span>
-        </div>
+
       </div>
     </section>
   );

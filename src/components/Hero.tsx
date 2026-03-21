@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -28,6 +29,9 @@ export default function Hero() {
   }, []);
 
   useGSAP(() => {
+    // Immediately hide text elements (GSAP controls visibility, not HTML)
+    gsap.set([textTitleRef.current, textDramaRef.current, pRef.current, ctaRef.current], { opacity: 0 });
+
     // Delay Hero timeline by 2.6s to sync start with the Preloader's box reveal
     const tl = gsap.timeline({ defaults: { ease: "power3.out" }, delay: 2.6 });
 
@@ -95,13 +99,17 @@ export default function Hero() {
           loop
           muted
           playsInline
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover hidden sm:block"
         >
           <source src="/atelier-hero.mp4" type="video/mp4" />
         </video>
-        <img
+        <Image
           src="/mobile_hero.png"
           alt="Atelier Maren Hero"
+          fill
+          priority
+          sizes="100vw"
           className="absolute inset-0 w-full h-full object-cover block sm:hidden"
         />
         {/* Subtle overlay for text legibility - hidden on mobile for better image clarity */}
@@ -116,13 +124,13 @@ export default function Hero() {
         <div className="mb-6 leading-[0.85] flex flex-col items-center pointer-events-none">
           <h1
             ref={textTitleRef}
-            className="font-display font-medium text-2xl sm:text-3xl md:text-4xl lg:text-6xl tracking-tight opacity-0"
+            className="font-display font-medium text-2xl sm:text-3xl md:text-4xl lg:text-6xl tracking-tight"
           >
             Spaces shaped
           </h1>
           <div
             ref={textDramaRef}
-            className="font-drama italic font-light text-[3rem] sm:text-5xl md:text-7xl lg:text-[140px] tracking-tight mt-1 sm:mt-2 opacity-0 text-[#2e4036]"
+            className="font-drama italic font-light text-[3rem] sm:text-5xl md:text-7xl lg:text-[140px] tracking-tight mt-1 sm:mt-2 text-[#2e4036]"
           >
             by light and intention.
           </div>
@@ -131,13 +139,13 @@ export default function Hero() {
         <div className="flex flex-col items-center gap-6 sm:gap-8 lg:gap-12 mt-8 sm:mt-12 md:mt-16">
           <p
             ref={pRef}
-            className="font-sans text-xs sm:text-sm md:text-base text-[#1a1a1a]/70 max-w-[40ch] sm:max-w-[45ch] leading-relaxed opacity-0 text-center pointer-events-none px-2"
+            className="font-sans text-xs sm:text-sm md:text-base text-[#1a1a1a]/70 max-w-[40ch] sm:max-w-[45ch] leading-relaxed text-center pointer-events-none px-2"
           >
             We create residential interiors that balance refined materiality with
             daily life. Every project begins with listening.
           </p>
 
-          <div ref={ctaRef} className="opacity-0">
+          <div ref={ctaRef}>
             <ButtonWithIconDemo
               label="Explore Our Work"
               className="bg-primary text-white font-sans uppercase tracking-widest"

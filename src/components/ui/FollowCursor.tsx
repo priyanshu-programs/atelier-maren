@@ -78,9 +78,16 @@ const FollowCursor: React.FC<FollowCursorProps> = ({
       animationFrame = requestAnimationFrame(loop);
     };
 
+    const isMobile = () => {
+      return (
+        'ontouchstart' in window ||
+        navigator.maxTouchPoints > 0 ||
+        window.matchMedia('(pointer: coarse)').matches
+      );
+    };
+
     const init = () => {
-      if (prefersReducedMotion.matches) {
-        console.log('Reduced motion enabled, cursor effect skipped.');
+      if (prefersReducedMotion.matches || isMobile()) {
         return;
       }
 

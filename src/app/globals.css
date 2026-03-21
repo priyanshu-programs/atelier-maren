@@ -40,7 +40,9 @@ body {
   visibility: hidden;
 }
 
-/* Hide default cursor globally */
-* {
-  cursor: none !important;
+/* Hide default cursor on non-touch devices only */
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
 }

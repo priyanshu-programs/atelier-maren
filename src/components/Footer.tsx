@@ -18,9 +18,9 @@ export default function Footer() {
         <div className="md:col-span-7 lg:col-start-7 lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-12 sm:gap-8">
           {/* Studio */}
           <div>
-            <h4 className="font-sans text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-white/50 mb-6 sm:mb-8">
+            <p className="font-sans text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-white/50 mb-6 sm:mb-8">
               Studio
-            </h4>
+            </p>
             <ul className="space-y-4 font-sans text-xs md:text-sm text-white/50">
               <li><a href="#" className="hover:text-white transition-colors duration-300">About Us</a></li>
               <li><a href="#" className="hover:text-white transition-colors duration-300">Philosophy</a></li>
@@ -31,9 +31,9 @@ export default function Footer() {
 
           {/* Work */}
           <div>
-            <h4 className="font-sans text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-white/50 mb-6 sm:mb-8">
+            <p className="font-sans text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-white/50 mb-6 sm:mb-8">
               Work
-            </h4>
+            </p>
             <ul className="space-y-4 font-sans text-xs md:text-sm text-white/50">
               <li><a href="#" className="hover:text-white transition-colors duration-300">Residential</a></li>
               <li><a href="#" className="hover:text-white transition-colors duration-300">Commercial</a></li>
@@ -44,9 +44,9 @@ export default function Footer() {
 
           {/* Connect */}
           <div>
-            <h4 className="font-sans text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-white/50 mb-6 sm:mb-8">
+            <p className="font-sans text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-white/50 mb-6 sm:mb-8">
               Connect
-            </h4>
+            </p>
             <ul className="space-y-4 font-sans text-xs md:text-sm text-white/50">
               <li><a href="#" className="hover:text-white transition-colors duration-300">Instagram</a></li>
               <li><a href="#" className="hover:text-white transition-colors duration-300">LinkedIn</a></li>
