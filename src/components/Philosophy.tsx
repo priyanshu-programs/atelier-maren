@@ -3,26 +3,12 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Philosophy() {
   const containerRef = useRef<HTMLElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Background Parallax
-    gsap.to(bgRef.current, {
-      yPercent: 20,
-      ease: "none",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-
     // SplitText style reveal (using basic lines simulation since SplitText is a premium plugin)
     const lines = gsap.utils.toArray<HTMLElement>(".reveal-line");
 
@@ -42,20 +28,8 @@ export default function Philosophy() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-[60dvh] sm:min-h-[70dvh] md:min-h-[80dvh] flex items-center justify-center py-20 sm:py-24 md:py-32 px-4 sm:px-6 overflow-hidden bg-[#1A1A1A] text-white"
+      className="relative w-full min-h-[60dvh] sm:min-h-[70dvh] md:min-h-[80dvh] flex items-center justify-center py-20 sm:py-24 md:py-32 px-4 sm:px-6 overflow-hidden bg-[#1B1B1A] text-white"
     >
-      {/* Background Parallax Texture */}
-      <div
-        ref={bgRef}
-        className="absolute inset-0 w-full h-[120%] -top-[10%] opacity-20 bg-cover bg-center pointer-events-none"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?q=80&w=2000&auto=format&fit=crop')",
-        }}
-      />
-
-      {/* Heavy gradient to blend edges */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1A1A1A] via-transparent to-[#1A1A1A]" />
-
       <div ref={textContainerRef} className="relative z-10 max-w-4xl w-full text-center">
         <div className="overflow-hidden mb-6">
           <p className="reveal-line font-sans text-xs sm:text-sm md:text-base tracking-widest uppercase text-white/50">

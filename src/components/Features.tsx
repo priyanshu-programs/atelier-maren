@@ -84,7 +84,7 @@ const SwatchCard = () => {
         {/* Bottom Swatch */}
         <div
           className="swatch-bottom absolute top-0 left-0 w-full h-full bg-cover bg-center rounded-xl shadow-sm flex items-end p-4 overflow-hidden transform-gpu"
-          style={{ backgroundImage: "url('/travertine.jpeg')" }}
+          style={{ backgroundImage: "url('/travertine.webp')" }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-[#E8E4DD]/90 to-transparent" />
           <div className="w-full relative z-10">
@@ -95,7 +95,7 @@ const SwatchCard = () => {
         {/* Middle Swatch */}
         <div
           className="swatch-middle absolute top-0 left-0 w-full h-full bg-cover bg-center rounded-xl shadow-md z-10 flex items-end p-4 overflow-hidden transform-gpu"
-          style={{ backgroundImage: "url('/bleached_oak.jpeg')" }}
+          style={{ backgroundImage: "url('/bleached_oak.webp')" }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-[#D4CBB3]/80 to-transparent" />
           <div className="w-full relative z-10">
@@ -106,7 +106,7 @@ const SwatchCard = () => {
         {/* Top Swatch */}
         <div
           className="swatch-top absolute top-0 left-0 w-full h-full bg-cover bg-center rounded-xl shadow-xl flex items-end p-4 overflow-hidden z-20 transform-gpu"
-          style={{ backgroundImage: "url('/heavy_boucle.jpeg')" }}
+          style={{ backgroundImage: "url('/heavy_boucle.webp')" }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 to-transparent" />
           <div className="w-full relative z-10">
