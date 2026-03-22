@@ -2,16 +2,18 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Outfit, Cormorant_Garamond, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
-import FollowCursor from "@/components/ui/FollowCursor";
+import DeferredCursor from "@/components/ui/DeferredCursor";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-jakarta",
+  display: "swap",
 });
 
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",
+  display: "swap",
 });
 
 const cormorant = Cormorant_Garamond({
@@ -19,12 +21,14 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
+  display: "swap",
 });
 
 const plexMono = IBM_Plex_Mono({
   weight: ["400", "500"],
   subsets: ["latin"],
   variable: "--font-plex-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -60,7 +64,7 @@ export default function RootLayout({
             </svg>
             <div style={{ width: '100%', height: '100%', filter: 'url(#noiseFilter)' }}></div>
           </div>
-          <FollowCursor color="#FAF8F5" zIndex={9999} />
+          <DeferredCursor />
           {children}
         </SmoothScroll>
       </body>

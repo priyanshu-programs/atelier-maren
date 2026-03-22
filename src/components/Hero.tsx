@@ -102,7 +102,7 @@ export default function Hero() {
           <source src="/atelier-hero.mp4" type="video/mp4" />
         </video>
         <Image
-          src="/mobile_hero.png"
+          src="/mobile_hero.webp"
           alt="Atelier Maren Hero"
           fill
           priority

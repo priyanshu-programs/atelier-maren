@@ -32,6 +32,9 @@ body {
   z-index: 9999;
   opacity: 0.05;
   pointer-events: none;
+  contain: strict;
+  content-visibility: auto;
+  will-change: opacity;
 }
 
 /* Custom selection */
