@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -13,6 +14,7 @@ const SwatchCard = () => {
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     let isHovered = false;
+    let isPaused = false;
 
     const ctx = gsap.context(() => {
       const spread = () => {
@@ -28,15 +30,15 @@ const SwatchCard = () => {
       };
 
       const runLoop = async () => {
-        if (isHovered) return;
+        if (isHovered || isPaused) return;
 
         spread();
         await new Promise(r => { timeout = setTimeout(r, 800 + 1500); });
-        if (isHovered) return;
+        if (isHovered || isPaused) return;
 
         close();
         await new Promise(r => { timeout = setTimeout(r, 800 + 1500); });
-        if (isHovered) return;
+        if (isHovered || isPaused) return;
 
         runLoop();
       };
@@ -65,11 +67,30 @@ const SwatchCard = () => {
       if (container) {
         container.addEventListener("mouseenter", onEnter);
         container.addEventListener("mouseleave", onLeave);
-        return () => {
+      }
+
+      // Pause animation when off-screen to save GPU cycles on mobile
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            isPaused = false;
+            runLoop();
+          } else {
+            isPaused = true;
+            clearTimeout(timeout);
+          }
+        },
+        { threshold: 0.1 }
+      );
+      if (container) observer.observe(container);
+
+      return () => {
+        if (container) {
           container.removeEventListener("mouseenter", onEnter);
           container.removeEventListener("mouseleave", onLeave);
-        };
-      }
+          observer.disconnect();
+        }
+      };
     }, containerRef);
 
     return () => {
@@ -81,12 +102,12 @@ const SwatchCard = () => {
   return (
     <div ref={containerRef} className="relative h-[250px] w-full flex items-center justify-center -mt-6">
       <div className="relative w-36 h-48">
-        {/* Bottom Swatch */}
+        {/* Bottom Swatch — uses Next.js Image for auto WebP conversion */}
         <div
-          className="swatch-bottom absolute top-0 left-0 w-full h-full bg-cover bg-center rounded-xl shadow-sm flex items-end p-4 overflow-hidden transform-gpu"
-          style={{ backgroundImage: "url('/travertine.jpeg')" }}
+          className="swatch-bottom absolute top-0 left-0 w-full h-full rounded-xl shadow-sm flex items-end p-4 overflow-hidden transform-gpu"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-[#E8E4DD]/90 to-transparent" />
+          <Image src="/travertine.jpeg" alt="Travertine" fill sizes="160px" className="object-cover" quality={75} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#E8E4DD]/90 to-transparent z-[1]" />
           <div className="w-full relative z-10">
             <div className="text-[10px] font-mono text-[#1A1A1A]/70 uppercase tracking-widest mb-1">Stone 02</div>
             <div className="text-sm font-display text-[#1A1A1A] pb-2 border-b border-[#1A1A1A]/20">Travertine</div>
@@ -94,10 +115,10 @@ const SwatchCard = () => {
         </div>
         {/* Middle Swatch */}
         <div
-          className="swatch-middle absolute top-0 left-0 w-full h-full bg-cover bg-center rounded-xl shadow-md z-10 flex items-end p-4 overflow-hidden transform-gpu"
-          style={{ backgroundImage: "url('/bleached_oak.jpeg')" }}
+          className="swatch-middle absolute top-0 left-0 w-full h-full rounded-xl shadow-md z-10 flex items-end p-4 overflow-hidden transform-gpu"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-[#D4CBB3]/80 to-transparent" />
+          <Image src="/bleached_oak.jpeg" alt="Bleached Oak" fill sizes="160px" className="object-cover" quality={75} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#D4CBB3]/80 to-transparent z-[1]" />
           <div className="w-full relative z-10">
             <div className="text-[10px] font-mono text-[#1A1A1A]/70 uppercase tracking-widest mb-1">Wood 01</div>
             <div className="text-sm font-display text-[#1A1A1A] pb-2 border-b border-[#1A1A1A]/20">Bleached Oak</div>
@@ -105,10 +126,10 @@ const SwatchCard = () => {
         </div>
         {/* Top Swatch */}
         <div
-          className="swatch-top absolute top-0 left-0 w-full h-full bg-cover bg-center rounded-xl shadow-xl flex items-end p-4 overflow-hidden z-20 transform-gpu"
-          style={{ backgroundImage: "url('/heavy_boucle.jpeg')" }}
+          className="swatch-top absolute top-0 left-0 w-full h-full rounded-xl shadow-xl flex items-end p-4 overflow-hidden z-20 transform-gpu"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 to-transparent" />
+          <Image src="/heavy_boucle.jpeg" alt="Heavy Bouclé" fill sizes="160px" className="object-cover" quality={75} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/90 to-transparent z-[1]" />
           <div className="w-full relative z-10">
             <div className="text-[10px] font-mono text-white/70 uppercase tracking-widest mb-1">Textile 01</div>
             <div className="text-sm font-display text-white pb-2 border-b border-white/20">Heavy Bouclé</div>
@@ -143,6 +164,21 @@ const BlueprintCard = () => {
         .to(".draft-measure", { opacity: 1, y: 0, duration: 0.8, ease: "power2.out", stagger: 0.2 }, 0)
         // Fade out slightly faster and hold for less time before fading out
         .to(".draft-outer-shape, .draft-room-shape, .draft-line-h, .draft-line-v, .draft-measure", { opacity: 0, duration: 0.8, ease: "power2.inOut", delay: 1.2 });
+
+      // Pause when off-screen to save CPU/GPU on mobile
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            tl.play();
+          } else {
+            tl.pause();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      if (containerRef.current) observer.observe(containerRef.current);
+
+      return () => observer.disconnect();
     }, containerRef);
     return () => ctx.revert();
   }, []);
@@ -221,6 +257,21 @@ const TimelineCard = () => {
         .to(".icon-3", { opacity: 1, scale: 1.15, color: "#1A1A1A", duration: 0.3, ease: "back.out(2)" }, 4)
         .to(".node-3", { scale: 1, duration: 0.2 }, 4.4)
         .to(".icon-3", { scale: 1, duration: 0.2 }, 4.4);
+
+      // Pause when off-screen to save CPU/GPU on mobile
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            tl.play();
+          } else {
+            tl.pause();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      if (containerRef.current) observer.observe(containerRef.current);
+
+      return () => observer.disconnect();
     }, containerRef);
     return () => ctx.revert();
   }, []);

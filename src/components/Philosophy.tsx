@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,6 +9,14 @@ export default function Philosophy() {
   const containerRef = useRef<HTMLElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useGSAP(() => {
     // Background Parallax
@@ -44,12 +52,14 @@ export default function Philosophy() {
       ref={containerRef}
       className="relative w-full min-h-[60dvh] sm:min-h-[70dvh] md:min-h-[80dvh] flex items-center justify-center py-20 sm:py-24 md:py-32 px-4 sm:px-6 overflow-hidden bg-[#1A1A1A] text-white"
     >
-      {/* Background Parallax Texture */}
+      {/* Background Parallax Texture — smaller image on mobile */}
       <div
         ref={bgRef}
         className="absolute inset-0 w-full h-[120%] -top-[10%] opacity-20 bg-cover bg-center pointer-events-none"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?q=80&w=2000&auto=format&fit=crop')",
+          backgroundImage: isMobile
+            ? "url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?q=60&w=800&auto=format&fit=crop')"
+            : "url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?q=80&w=2000&auto=format&fit=crop')",
         }}
       />
 

@@ -69,6 +69,7 @@ export default function Preloader() {
     }, "reveal");
 
     // Find Navbar Target destination
+    // Batch all geometry reads together BEFORE any GSAP writes to avoid forced reflow
     let destX = 0;
     let destY = -150;
     let destScale = 0.5;
@@ -76,15 +77,14 @@ export default function Preloader() {
     const logoEl = document.querySelector(".preloader-logo");
     
     if (navLogo && logoEl) {
+      // Read all geometry at once (batched reads prevent forced reflow)
       const navRect = navLogo.getBoundingClientRect();
       const logoRect = logoEl.getBoundingClientRect();
-      
-      // Use actual computed font-size ratio for pixel-perfect scaling
       const navFontSize = parseFloat(window.getComputedStyle(navLogo).fontSize);
       const loaderFontSize = parseFloat(window.getComputedStyle(logoEl).fontSize);
-      destScale = navFontSize / loaderFontSize;
       
-      // Position: center-to-center offset
+      // Compute values (no DOM reads after this point)
+      destScale = navFontSize / loaderFontSize;
       destX = (navRect.left + navRect.width / 2) - (logoRect.left + logoRect.width / 2);
       destY = (navRect.top + navRect.height / 2) - (logoRect.top + logoRect.height / 2);
     }

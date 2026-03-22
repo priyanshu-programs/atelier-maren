@@ -9,6 +9,15 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof window !== "undefined") {
       gsap.registerPlugin(ScrollTrigger);
+
+      // Skip Lenis on touch devices — native momentum scroll is already smooth
+      // and Lenis adds a per-frame RAF loop with no perceptible benefit
+      const isTouchDevice =
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0 ||
+        window.matchMedia("(pointer: coarse)").matches;
+
+      if (isTouchDevice) return;
       
       const lenis = new Lenis({
         duration: 1.2,
@@ -17,7 +26,6 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         gestureOrientation: "vertical",
         smoothWheel: true,
         wheelMultiplier: 1,
-        touchMultiplier: 2,
       });
 
       lenis.on("scroll", ScrollTrigger.update);

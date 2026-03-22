@@ -34,6 +34,13 @@ body {
   pointer-events: none;
 }
 
+/* Disable GPU-heavy SVG noise filter on mobile */
+@media (max-width: 767px) {
+  .noise-overlay {
+    display: none;
+  }
+}
+
 /* Custom selection */
 ::selection {
   background: #D4CBB3;

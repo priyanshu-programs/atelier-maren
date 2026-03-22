@@ -94,23 +94,27 @@ export default function Hero() {
           maskImage: maskStyle
         }}
       >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover hidden sm:block"
-        >
-          <source src="/atelier-hero.mp4" type="video/mp4" />
-        </video>
+        {/* Conditionally render video only on desktop — prevents 3.98 MB download on mobile.
+            CSS `hidden sm:block` alone doesn't stop browsers from fetching autoPlay videos. */}
+        {!isMobile && (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/atelier-hero.mp4" type="video/mp4" />
+          </video>
+        )}
         <Image
           src="/mobile_hero.png"
           alt="Atelier Maren Hero"
           fill
           priority
           sizes="100vw"
-          className="absolute inset-0 w-full h-full object-cover block sm:hidden"
+          className={`absolute inset-0 w-full h-full object-cover ${isMobile ? 'block' : 'hidden'}`}
         />
         {/* Subtle overlay for text legibility - hidden on mobile for better image clarity */}
         <div className="absolute inset-0 bg-white/30 z-20 hidden sm:block" />

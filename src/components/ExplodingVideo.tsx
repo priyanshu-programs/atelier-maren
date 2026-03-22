@@ -6,9 +6,9 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const TOTAL_FRAMES = 240;
-const MOBILE_FRAME_STEP = 3; // Load every 3rd frame on mobile → ~80 frames
+const MOBILE_FRAME_STEP = 4; // Load every 4th frame on mobile → ~60 frames (saves ~20 requests vs step=3)
 const MOBILE_BREAKPOINT = 768;
-const MOBILE_BATCH_SIZE = 20; // Progressive loading batch size
+const MOBILE_BATCH_SIZE = 15; // Smaller batches for faster initial load
 
 function frameUrl(i: number) {
   return `/frames/frame_${String(i + 1).padStart(4, "0")}.jpg`;
@@ -78,9 +78,10 @@ export default function ExplodingVideo() {
       const height = firstImg.naturalHeight;
 
       if (isMobile) {
-        // Skip DPR scaling on mobile — CSS handles visual sizing
-        canvas.width = width;
-        canvas.height = height;
+        // Halve resolution on mobile — CSS handles visual sizing, no need for
+        // full-res canvas draws on small screens
+        canvas.width = Math.round(width / 2);
+        canvas.height = Math.round(height / 2);
       } else {
         const dpr = window.devicePixelRatio || 1;
         canvas.width = width * dpr;
@@ -96,8 +97,8 @@ export default function ExplodingVideo() {
       // Draw first frame immediately with top fade
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        ctx.drawImage(firstImg, 0, 0, width, height);
-        applyTopFade(ctx, width, height);
+        ctx.drawImage(firstImg, 0, 0, canvas.width, canvas.height);
+        applyTopFade(ctx, canvas.width, canvas.height);
       }
     };
 
@@ -180,8 +181,9 @@ export default function ExplodingVideo() {
         const img = frames[idx];
         // Guard: frame may not be loaded yet during progressive loading
         if (img) {
-          const w = img.naturalWidth;
-          const h = img.naturalHeight;
+          // Use canvas dimensions (halved on mobile) not source image dimensions
+          const w = canvas.width;
+          const h = canvas.height;
           ctx.clearRect(0, 0, w, h);
           ctx.globalCompositeOperation = "source-over";
           ctx.drawImage(img, 0, 0, w, h);
