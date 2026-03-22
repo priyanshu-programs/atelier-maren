@@ -30,6 +30,12 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Atelier Maren — Luxury Residential Interior Design Studio",
   description: "Atelier Maren creates refined residential interiors that balance materiality with daily life. Every project begins with listening. Book a consultation.",
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
