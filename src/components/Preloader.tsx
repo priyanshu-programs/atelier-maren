@@ -1,10 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(useGSAP);
+import { gsap, useGSAP } from "@/lib/gsap";
 
 export default function Preloader() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -12,10 +9,10 @@ export default function Preloader() {
   useGSAP(() => {
     // Lock scroll (Stage 1 starts)
     document.body.style.overflow = "hidden";
-    
+
     // Ensure letters are invisible before animation (prevents flash)
     gsap.set(".preloader-letter", { opacity: 0 });
-    
+
     // Ensure navbar is hidden initially (Preloader will reveal it)
     const navbar = document.getElementById("nav-container");
     const navLogo = document.getElementById("nav-logo");
@@ -31,7 +28,7 @@ export default function Preloader() {
       onComplete: () => {
         // Unlock scroll when animation finishes completely
         document.body.style.overflow = "";
-        
+
         // Remove preloader from DOM visually
         gsap.set(containerRef.current, {
           display: "none"
@@ -40,7 +37,7 @@ export default function Preloader() {
     });
 
     // Stage 1 is completely static. The timeline starts the logo animation with a 0.8s delay.
-    
+
     // Stage 2 — LOGO REVEAL 
     tl.fromTo(
       ".preloader-letter",
@@ -75,14 +72,14 @@ export default function Preloader() {
     let destScale = 0.5;
 
     const logoEl = document.querySelector(".preloader-logo");
-    
+
     if (navLogo && logoEl) {
       // Read all geometry at once (batched reads prevent forced reflow)
       const navRect = navLogo.getBoundingClientRect();
       const logoRect = logoEl.getBoundingClientRect();
       const navFontSize = parseFloat(window.getComputedStyle(navLogo).fontSize);
       const loaderFontSize = parseFloat(window.getComputedStyle(logoEl).fontSize);
-      
+
       // Compute values (no DOM reads after this point)
       destScale = navFontSize / loaderFontSize;
       destX = (navRect.left + navRect.width / 2) - (logoRect.left + logoRect.width / 2);
@@ -104,7 +101,7 @@ export default function Preloader() {
       duration: 0.4,
       ease: "power2.inOut"
     }, "reveal+=1.8");
-    
+
     // Stage 6 — NAVBAR reveal (container fades in early, but logo stays hidden)
     if (navbar) {
       tl.to(navbar, { opacity: 1, duration: 0.8, ease: "power2.out" }, "reveal+=1.4");
@@ -125,8 +122,8 @@ export default function Preloader() {
   const letters = logoText.split("").map((char, index) => {
     if (char === " ") {
       return (
-        <span 
-          key={index} 
+        <span
+          key={index}
           className="preloader-letter inline-block w-2 sm:w-3 opacity-0"
         />
       );
@@ -145,13 +142,13 @@ export default function Preloader() {
       ref={containerRef}
       className="fixed inset-0 z-[100] w-full h-[100dvh] pointer-events-none flex flex-col items-center justify-center"
     >
-      <div 
+      <div
         className="preloader-bg absolute inset-0 bg-primary pointer-events-auto"
         style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 0% 0%)" }}
       ></div>
 
       {/* Centered Logo */}
-      <div 
+      <div
         className="preloader-logo relative z-20 flex items-center justify-center font-drama italic font-light tracking-wide text-background text-2xl sm:text-3xl md:text-4xl px-4 whitespace-nowrap"
       >
         {letters}

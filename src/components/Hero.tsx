@@ -1,13 +1,10 @@
 "use client";
+"use no memo";
 
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import ButtonWithIconDemo from "@/components/ui/button-with-icon";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const containerRef = useRef<HTMLElement>(null);

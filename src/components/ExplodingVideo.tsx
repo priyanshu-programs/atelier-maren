@@ -1,9 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 const TOTAL_FRAMES = 240;
 const MOBILE_FRAME_STEP = 4; // Load every 4th frame on mobile → ~60 frames (saves ~20 requests vs step=3)
@@ -54,6 +52,7 @@ export default function ExplodingVideo() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const framesRef = useRef<HTMLImageElement[]>([]);
   const lastDrawnFrameRef = useRef<number>(-1); // Throttle: track last drawn index
+  const logicalSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
   const isMobileRef = useRef(false);
   const [ready, setReady] = useState(false);
 
@@ -80,12 +79,17 @@ export default function ExplodingVideo() {
       if (isMobile) {
         // Halve resolution on mobile — CSS handles visual sizing, no need for
         // full-res canvas draws on small screens
-        canvas.width = Math.round(width / 2);
-        canvas.height = Math.round(height / 2);
+        const lw = Math.round(width / 2);
+        const lh = Math.round(height / 2);
+        canvas.width = lw;
+        canvas.height = lh;
+        logicalSizeRef.current = { w: lw, h: lh };
       } else {
         const dpr = window.devicePixelRatio || 1;
         canvas.width = width * dpr;
         canvas.height = height * dpr;
+        // Logical size is the pre-DPR dimensions; ctx.scale handles the rest
+        logicalSizeRef.current = { w: width, h: height };
         const ctx = canvas.getContext("2d");
         if (ctx) {
           ctx.scale(dpr, dpr);
@@ -97,8 +101,9 @@ export default function ExplodingVideo() {
       // Draw first frame immediately with top fade
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        ctx.drawImage(firstImg, 0, 0, canvas.width, canvas.height);
-        applyTopFade(ctx, canvas.width, canvas.height);
+        const { w, h } = logicalSizeRef.current;
+        ctx.drawImage(firstImg, 0, 0, w, h);
+        applyTopFade(ctx, w, h);
       }
     };
 
@@ -145,8 +150,6 @@ export default function ExplodingVideo() {
   useGSAP(() => {
     if (!ready) return;
 
-    gsap.registerPlugin(ScrollTrigger);
-
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -181,9 +184,8 @@ export default function ExplodingVideo() {
         const img = frames[idx];
         // Guard: frame may not be loaded yet during progressive loading
         if (img) {
-          // Use canvas dimensions (halved on mobile) not source image dimensions
-          const w = canvas.width;
-          const h = canvas.height;
+          // Use logical dimensions (pre-DPR) — ctx.scale handles DPR on desktop
+          const { w, h } = logicalSizeRef.current;
           ctx.clearRect(0, 0, w, h);
           ctx.globalCompositeOperation = "source-over";
           ctx.drawImage(img, 0, 0, w, h);

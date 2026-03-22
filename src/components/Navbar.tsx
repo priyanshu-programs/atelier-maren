@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import ButtonWithIconDemo from "@/components/ui/button-with-icon";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Navbar() {
   const navRef = useRef<HTMLDivElement>(null);

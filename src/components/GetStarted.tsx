@@ -1,12 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import ButtonWithIconDemo from "@/components/ui/button-with-icon";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function GetStarted() {
   const sectionRef = useRef<HTMLElement>(null);

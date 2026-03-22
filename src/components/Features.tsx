@@ -330,7 +330,7 @@ export default function Features() {
         y: 0,
         opacity: 1,
         stagger: 0.2, // Gives the beautiful overlap parallax feel
-        ease: "power2.out", 
+        ease: "power2.out",
         duration: 2 // Relatively speaking for the scrub scrub time
       });
     });
@@ -359,45 +359,45 @@ export default function Features() {
     <section ref={containerRef} className="w-full bg-background relative overflow-hidden">
       <div className="min-h-screen py-20 sm:py-24 md:py-32 px-4 sm:px-6 md:px-16 w-full max-w-7xl mx-auto flex flex-col justify-center">
         <div className="mb-20">
-        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-foreground max-w-xl">
-          A disciplined approach to <span className="italic font-drama">Considered Living</span>.
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-        {/* Card 1 */}
-        <div className="feature-card bg-white border border-foreground/5 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)] min-h-[380px] md:min-h-[450px]">
-          <div>
-            <h3 className="font-display font-medium text-xl mb-2 text-[#1A1A1A]">Curated Sourcing</h3>
-            <p className="font-sans text-sm text-[#1A1A1A]/70">
-              Accessing exclusive artisans and rare materials that can&apos;t be found in any catalog.
-            </p>
-          </div>
-          <SwatchCard />
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight text-foreground max-w-xl">
+            A disciplined approach to <span className="italic font-drama">Considered Living</span>.
+          </h2>
         </div>
 
-        {/* Card 2 */}
-        <div className="feature-card bg-white border border-foreground/5 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)] min-h-[350px] md:min-h-[400px] overflow-hidden">
-          <div>
-            <h3 className="font-display font-medium text-xl mb-2 text-[#1A1A1A]">Refined Precision</h3>
-            <p className="font-sans text-sm text-[#1A1A1A]/70 mb-8">
-              Every element earns its place. Nothing extra. Nothing missing.
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          {/* Card 1 */}
+          <div className="feature-card bg-white border border-foreground/5 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)] min-h-[380px] md:min-h-[450px]">
+            <div>
+              <h3 className="font-display font-medium text-xl mb-2 text-[#1A1A1A]">Curated Sourcing</h3>
+              <p className="font-sans text-sm text-[#1A1A1A]/70">
+                Accessing exclusive artisans and rare materials that can&apos;t be found in any catalog.
+              </p>
+            </div>
+            <SwatchCard />
           </div>
-          <BlueprintCard />
-        </div>
 
-        {/* Card 3 */}
-        <div className="feature-card bg-white border border-foreground/5 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)] min-h-[350px] md:min-h-[400px]">
-          <div>
-            <h3 className="font-display font-medium text-xl mb-2 text-[#1A1A1A]">Seamless Execution</h3>
-            <p className="font-sans text-sm text-[#1A1A1A]/70 mb-8">
-              From initial concept to flawless installation — managed to the hour.
-            </p>
+          {/* Card 2 */}
+          <div className="feature-card bg-white border border-foreground/5 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)] min-h-[350px] md:min-h-[400px] overflow-hidden">
+            <div>
+              <h3 className="font-display font-medium text-xl mb-2 text-[#1A1A1A]">Refined Precision</h3>
+              <p className="font-sans text-sm text-[#1A1A1A]/70 mb-8">
+                Every element earns its place. Nothing extra. Nothing missing.
+              </p>
+            </div>
+            <BlueprintCard />
           </div>
-          <TimelineCard />
+
+          {/* Card 3 */}
+          <div className="feature-card bg-white border border-foreground/5 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 flex flex-col justify-between shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)] min-h-[350px] md:min-h-[400px]">
+            <div>
+              <h3 className="font-display font-medium text-xl mb-2 text-[#1A1A1A]">Seamless Execution</h3>
+              <p className="font-sans text-sm text-[#1A1A1A]/70 mb-8">
+                From initial concept to flawless installation — managed to the hour.
+              </p>
+            </div>
+            <TimelineCard />
+          </div>
         </div>
-      </div>
       </div>
     </section>
   );

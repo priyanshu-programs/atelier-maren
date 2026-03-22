@@ -2,11 +2,7 @@
 
 import { useRef, useCallback, useState, useEffect } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 
 /* ── Vignette focal points per step — shifts the lighting feel ── */
 const vignetteFocals = [
