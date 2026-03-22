@@ -29,9 +29,6 @@ export default function Hero() {
   }, []);
 
   useGSAP(() => {
-    // Immediately hide text elements (GSAP controls visibility, not HTML)
-    gsap.set([textTitleRef.current, textDramaRef.current, pRef.current, ctaRef.current], { opacity: 0 });
-
     // Delay Hero timeline by 2.6s to sync start with the Preloader's box reveal
     const tl = gsap.timeline({ defaults: { ease: "power3.out" }, delay: 2.6 });
 

@@ -39,9 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://images.unsplash.com" />
-      </head>
+      <head />
       <body
         className={`${jakarta.variable} ${outfit.variable} ${cormorant.variable} ${plexMono.variable} font-sans antialiased`}
         suppressHydrationWarning
